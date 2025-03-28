@@ -50,8 +50,18 @@ def disable_event_listener():
 
 # APScheduler 인스턴스 생성
 scheduler = BackgroundScheduler(timezone="Asia/Seoul")
-scheduler.add_job(enable_event_listener, 'cron', hour=15, minute=0, timezone="Asia/Seoul")
-scheduler.add_job(disable_event_listener, 'cron', hour=17, minute=5, timezone="Asia/Seoul")
+
+# 평일(월-금) 오전 10시에 이벤트 리스너 활성화
+scheduler.add_job(enable_event_listener, 'cron', 
+                 day_of_week='mon-fri',  # 월요일부터 금요일까지
+                 hour=9, minute=59, 
+                 timezone="Asia/Seoul")
+
+# 평일(월-금) 오전 10시 5분에 이벤트 리스너 비활성화
+scheduler.add_job(disable_event_listener, 'cron', 
+                 day_of_week='mon-fri',  # 월요일부터 금요일까지
+                 hour=10, minute=2, 
+                 timezone="Asia/Seoul")
 
 try:
     scheduler.start()
